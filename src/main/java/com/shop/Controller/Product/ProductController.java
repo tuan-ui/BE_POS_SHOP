@@ -1,6 +1,7 @@
 package com.shop.Controller.Product;
 
 import com.shop.Entity.Product.Product;
+import com.shop.Service.Product.DTO.ProductDTO;
 import com.shop.Service.Product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,5 +38,10 @@ public class ProductController {
     @DeleteMapping("/delete/{id}")
     public void deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
+    }
+
+    @GetMapping("/getDetailedProducts")
+    public List<ProductDTO> getDetailedProducts() {
+        return productService.getDetailedProducts();
     }
 }

@@ -1,4 +1,4 @@
-package com.shop.Entity.Product;
+package com.shop.Entity.Store;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,19 +7,14 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.math.BigDecimal;
-
-@Document(collection = "products")
+@Document(collection = "stores")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Product {
+public class Store {
     @Transient
-    public static final String SEQUENCE_NAME = "product_sequence";
+    public static final String SEQUENCE_NAME = "store_sequence";
     @Id
     private Long id;
-    private String name;
-    private BigDecimal price;
-    private Long categoryID;
-    private Long storeID;
+    private Integer quantity;
 }

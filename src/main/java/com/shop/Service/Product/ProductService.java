@@ -2,7 +2,9 @@ package com.shop.Service.Product;
 
 import com.shop.Entity.Database.DatabaseSequence;
 import com.shop.Entity.Product.Product;
+import com.shop.Repository.Product.AggregationProductRepository;
 import com.shop.Repository.Product.ProductRepository;
+import com.shop.Service.Product.DTO.ProductDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
@@ -21,6 +23,12 @@ public class ProductService {
     private ProductRepository productRepository;
     @Autowired
     private MongoOperations mongoOperations;
+    @Autowired
+    private AggregationProductRepository aggregationProductRepository;
+
+    public List<ProductDTO> getDetailedProducts() {
+        return aggregationProductRepository.findProducts();
+    }
 
     public long generateSequence(String seqName) {
         DatabaseSequence counter = mongoOperations.findAndModify(query(where("_id").is(seqName)),
@@ -46,7 +54,9 @@ public class ProductService {
         Product data = productRepository.findById(product.getId()).orElse(null);
         if(Objects.nonNull(data)) {
             data.setName(product.getName());
-            data.setAlias(product.getAlias());
+            data.setPrice(product.getPrice());
+            data.setCategoryID(product.getCategoryID());
+            data.setStoreID(product.getStoreID());
             productRepository.save(data);
         }
     }
