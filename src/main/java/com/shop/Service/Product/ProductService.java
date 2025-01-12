@@ -6,6 +6,9 @@ import com.shop.Repository.Product.AggregationProductRepository;
 import com.shop.Repository.Product.ProductRepository;
 import com.shop.Service.Product.DTO.ProductDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
@@ -26,8 +29,10 @@ public class ProductService {
     @Autowired
     private AggregationProductRepository aggregationProductRepository;
 
-    public List<ProductDTO> getDetailedProducts() {
-        return aggregationProductRepository.findProducts();
+    public Page<ProductDTO> getDetailedProducts(Pageable pageable) {
+        List<ProductDTO> products = aggregationProductRepository.findProducts(pageable);
+        long total = productRepository.count();
+        return new PageImpl<>(products, pageable, total);
     }
 
     public long generateSequence(String seqName) {

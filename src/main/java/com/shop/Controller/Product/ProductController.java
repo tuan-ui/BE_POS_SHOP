@@ -4,8 +4,14 @@ import com.shop.Entity.Product.Product;
 import com.shop.Service.Product.DTO.ProductDTO;
 import com.shop.Service.Product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -41,7 +47,20 @@ public class ProductController {
     }
 
     @GetMapping("/getDetailedProducts")
-    public List<ProductDTO> getDetailedProducts() {
-        return productService.getDetailedProducts();
+    public ResponseEntity<Page<ProductDTO>> getDetailedProducts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String[] sort) {
+
+        List<Sort.Order> orders = new ArrayList<>();
+        for (String sortOrder : sort) {
+            String[] sortSplit = sortOrder.split(",");
+            orders.add(new Sort.Order(Sort.Direction.fromString(sortSplit[1]), sortSplit[0]));
+        }
+        Pageable pageable = PageRequest.of(page, size, Sort.by(orders));
+
+        Page<ProductDTO> productPage = productService.getDetailedProducts(pageable);
+
+        return ResponseEntity.ok(productPage);
     }
 }
